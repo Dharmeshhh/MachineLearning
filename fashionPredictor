@@ -1,0 +1,37 @@
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import activations
+#import cv2 as cv
+import numpy as np
+import matplotlib.pyplot as plot
+
+labels = ['T-shirt/top','Trouser/pants','Pullover shirt','Dress','Coat','Sandal','Shirt','Sneaker','Bag','Ankle boot']
+
+fashion_mnist = keras.datasets.fashion_mnist
+(train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
+
+model = keras.models.Sequential([
+      keras.layers.Flatten(input_shape=(28, 28)),  # size of input, input layer
+      keras.layers.Dense(128, activation= activations.relu), #tf.nn.relu
+#     # 128 function each one with parameters
+#     # pixels = will output correct value , sys figure out parameter to get result
+#     # relu rectified linear unit = return values > 0 (filters )
+      keras.layers.Dense(10, activation=tf.nn.softmax)
+#     # 10 labels
+     # softmax pickup the largest number from the set(set of probability)
+     ])
+# loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+model.compile(optimizer=tf.keras.optimizers.Adam(), loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+model.fit(train_images, train_labels, epochs=5)
+test_loss, test_accuracy = model.evaluate(test_images, test_labels)
+# model.save('fashionmodel.json')
+
+# model = keras.models.load_model('G:/CODE/Demos/NeuralNetwork/fashionmodel.json')
+# imgI = cv.imread(f'G:/CODE/Demos/NeuralNetwork/Data/{1}.png')
+# image = cv.resize(imgI, (28, 28))
+# grayscale = cv.cvtColor(train_images[5], cv.COLOR_BGR2GRAY)
+plot.imshow(test_images[1])
+plot.show()
+prediction = model.predict(test_images)  # gray scale 28,28 only centered
+print(labels[np.argmax(prediction[5])])
+# print(test_labels[0])
